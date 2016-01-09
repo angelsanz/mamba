@@ -127,15 +127,15 @@ class DocumentationFormatter(Formatter):
 
 
     def _format_full_example_name(self, example):
-        result = [self._format_example_name(example)]
+        parts_of_name = [self._format_example_name(example)]
 
         current = example
         while current.parent:
-            result.append(self._format_example_name(current.parent))
+            parts_of_name.append(self._format_example_name(current.parent))
             current = current.parent
 
-        result.reverse()
-        return ' '.join(result)
+        parts_of_name.reverse()
+        return ' '.join(parts_of_name)
 
     def _format_failing_expectation(self, example):
         tb = self._traceback(example)
