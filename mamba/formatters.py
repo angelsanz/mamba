@@ -75,18 +75,15 @@ class DocumentationFormatter(Formatter):
 
     def _format_slow_test(self, example):
         seconds = total_seconds(example.elapsed_time)
-        color_name = None
+        if seconds <= settings.slow_test_threshold:
+            return ''
 
-        if seconds > self.settings.slow_test_threshold:
-            color_name = 'yellow'
+        color_name = 'yellow'
+        if seconds > 5 * self.settings.slow_test_threshold:
+            color_name = 'red'
 
-            if seconds > 5 * self.settings.slow_test_threshold:
-                color_name = 'red'
+        return self._color(color_name, ' (' + self._format_duration(example.elapsed_time) + ')')
 
-        if color_name is not None:
-            return self._color(color_name, ' (' + self._format_duration(example.elapsed_time) + ')')
-
-        return ''
 
     def example_group_started(self, example_group):
         self._format_example_group(example_group, 'white')
