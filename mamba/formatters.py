@@ -40,15 +40,18 @@ class Formatter(object):
 
 
 class DocumentationFormatter(Formatter):
+    PASS_SYMBOL = '✓'
+    FAIL_SYMBOL = '✗'
+    PENDING_SYMBOL = FAIL_SYMBOL
 
     def __init__(self, settings):
         self.settings = settings
 
     def example_passed(self, example):
-        self._format_example(self._color('green', '✓'), example)
+        self._format_example(self._color('green', self.PASS_SYMBOL), example)
 
     def example_failed(self, example):
-        self._format_example(self._color('red', '✗'), example)
+        self._format_example(self._color('red', self.FAIL_SYMBOL), example)
         with indent((self._depth(example) + 1) * 2):
             puts(self._color('red', str(example.error.exception)))
 
@@ -62,7 +65,7 @@ class DocumentationFormatter(Formatter):
         return depth
 
     def example_pending(self, example):
-        self._format_example(self._color('yellow', '✗'), example)
+        self._format_example(self._color('yellow', self.PENDING_SYMBOL), example)
 
     def _format_example(self, symbol, example):
         puts('  ' * self._depth(example) + symbol + ' ' + self._format_example_name(example) + self._format_slow_test(example))
@@ -172,15 +175,21 @@ class DocumentationFormatter(Formatter):
 
 
 class ProgressFormatter(DocumentationFormatter):
+    PASS_SYMBOL = '.'
+    FAIL_SYMBOL = 'F'
+    PENDING_SYMBOL = '*'
 
     def example_passed(self, example):
-        puts(self._color('green' ,'.'), newline=False)
+        self._print_character(self.PASS_SYMBOL, 'green')
 
     def example_failed(self, example):
-        puts(self._color('red', 'F'), newline=False)
+        self._print_character(self.FAIL_SYMBOL, 'red')
 
     def example_pending(self, example):
-        puts(self._color('yellow', '*'), newline=False)
+        self._print_character(self.PENDING_SYMBOL, 'yellow')
+
+    def _print_character(self, character, color):
+        puts(self._color(color , character), newline=False)
 
     def example_group_started(self, example_group):
         pass
