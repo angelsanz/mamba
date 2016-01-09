@@ -45,7 +45,7 @@ class DocumentationFormatter(Formatter):
     PENDING_SYMBOL = FAIL_SYMBOL
 
     def __init__(self, settings):
-        self.settings = settings
+        self._settings = settings
 
     def example_passed(self, example):
         self._format_example(self._color('green', self.PASS_SYMBOL), example)
@@ -75,11 +75,11 @@ class DocumentationFormatter(Formatter):
 
     def _format_slow_test(self, example):
         seconds = total_seconds(example.elapsed_time)
-        if seconds <= settings.slow_test_threshold:
+        if seconds <= self._settings.slow_test_threshold:
             return ''
 
         color_name = 'yellow'
-        if seconds > 5 * self.settings.slow_test_threshold:
+        if seconds > 5 * self._settings.slow_test_threshold:
             color_name = 'red'
 
         return self._color(color_name, ' (' + self._format_duration(example.elapsed_time) + ')')
@@ -168,7 +168,7 @@ class DocumentationFormatter(Formatter):
         return getattr(colored, name)(text)
 
     def _should_not_colorize(self):
-        return self.settings.no_color or not sys.stdout.isatty()
+        return self._settings.no_color or not sys.stdout.isatty()
 
 
 class ProgressFormatter(DocumentationFormatter):
