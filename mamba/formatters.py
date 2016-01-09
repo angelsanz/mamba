@@ -162,9 +162,13 @@ class DocumentationFormatter(Formatter):
         return ''.join([message[2:] for message in reversed(traceback.format_tb(tb))])
 
     def _color(self, name, text):
-        if not self.settings.no_color and sys.stdout.isatty():
-            return getattr(colored, name)(text)
-        return text
+        if self._should_not_colorize():
+            return text
+
+        return getattr(colored, name)(text)
+
+    def _should_not_colorize(self):
+        return self.settings.no_color or not sys.stdout.isatty()
 
 
 class ProgressFormatter(DocumentationFormatter):
