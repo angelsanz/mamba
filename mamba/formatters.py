@@ -71,7 +71,7 @@ class DocumentationFormatter(Formatter):
         name = example.name
         if name[8:10] == '__' and name[:8].isdigit():
             name = name[10:]
-        return name.replace('_', ' ')
+        return name
 
     def _format_slow_test(self, example):
         seconds = total_seconds(example.elapsed_time)
