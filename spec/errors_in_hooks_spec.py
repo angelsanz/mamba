@@ -1,6 +1,3 @@
-from expects import *
-from doublex import *
-
 from mamba import reporter
 
 from spec.object_mother import *

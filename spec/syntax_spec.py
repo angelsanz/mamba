@@ -3,13 +3,12 @@
 import ast
 import functools
 
-from expects import expect, be_false, be_an, have_length, equal, be, match, be_none, be_true
-
 from mamba.syntax.transformer import (
     WithStatement,
     HookToMethod,
     ExampleToMethod,
-    ExampleGroupToClass
+    ExampleGroupToClass,
+    MambaSyntaxToClassBasedSyntax
 )
 from mamba.infrastructure import is_python3
 
@@ -66,7 +65,6 @@ def _retrieve_name_of_parameter(function_parameter_node):
     if is_python3():
         return function_parameter_node.arg
     return function_parameter_node.id
-
 
 
 with description('the example transformer'):
@@ -258,6 +256,34 @@ with description('the example group transformer'):
 
                     remaining_nodes = class_declaration.body[1:]
                     expect(remaining_nodes).to(equal(node.body))
+
+
+with description('the global transformer'):
+    with context('attempts to import selected libraries at the top of each tree'):
+        with before.each:
+            transformed_tree = MambaSyntaxToClassBasedSyntax().transform(ast.parse(''))
+            number_of_autoimported_libraries = len(MambaSyntaxToClassBasedSyntax.AUTOIMPORTED_LIBRARIES)
+            self.possible_nodes_representing_library_imports = transformed_tree.body[0:number_of_autoimported_libraries]
+
+        with it('creates a try-except block per library'):
+            for node in self.possible_nodes_representing_library_imports:
+                expect(node).to(be_an(self.ast_class_representing_try_block()))
+
+        def ast_class_representing_try_block(self):
+            if is_python3():
+                return ast.Try
+            return ast.TryExcept
+
+        with it('creates a starred-import statement per library'):
+            for node in self.possible_nodes_representing_library_imports:
+                statement_inside_node = node.body[0]
+                expect(statement_inside_node).to(be_an(ast.ImportFrom))
+
+                imported_library = statement_inside_node.module
+                expect(MambaSyntaxToClassBasedSyntax.AUTOIMPORTED_LIBRARIES).to(contain(imported_library))
+
+                imported_name = statement_inside_node.names[0].name
+                expect(imported_name).to(equal('*'))
 
 
 

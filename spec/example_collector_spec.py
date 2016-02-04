@@ -5,8 +5,6 @@ import sys
 import inspect
 import functools
 
-from expects import *
-
 from mamba import example, example_group, loader
 from mamba.example_collector import ExampleCollector
 

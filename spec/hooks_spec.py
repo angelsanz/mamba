@@ -1,5 +1,3 @@
-from expects import *
-
 with description('Hooks'):
 
     with before.all:

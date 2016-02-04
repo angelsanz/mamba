@@ -1,6 +1,3 @@
-from expects import *
-
-
 RETURN_VALUE = '42'
 
 with description('Refactoring goodies'):

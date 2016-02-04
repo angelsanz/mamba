@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from expects import *
-
-
 class Subject(object):
     pass
 

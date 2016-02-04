@@ -1,4 +1,5 @@
 import ast
+import textwrap
 
 from .input_nodes import WithStatement
 from .declarations import HookDeclaration, ExampleDeclaration, ExampleGroupDeclaration
@@ -12,8 +13,23 @@ class MambaSyntaxToClassBasedSyntax(object):
     def transform(self, tree):
         transformed_ast = self._with_statement_transformer.visit(tree)
         ast.fix_missing_locations(transformed_ast)
+        self._prepend_import_statements_for_supported_libraries(transformed_ast)
 
         return transformed_ast
+
+    def _prepend_import_statements_for_supported_libraries(self, tree):
+        for library_name in self.AUTOIMPORTED_LIBRARIES:
+            tree.body.insert(0,
+                ast.parse(self._AUTOIMPORT_TEMPLATE.format(library_name)).body[0]
+            )
+
+    AUTOIMPORTED_LIBRARIES = ['expects', 'doublex', 'doublex_expects']
+    _AUTOIMPORT_TEMPLATE = textwrap.dedent('''
+        try:
+            from {0} import *
+        except ImportError:
+            pass
+    ''')
 
 
 class WithStatementTransformer(ast.NodeTransformer):

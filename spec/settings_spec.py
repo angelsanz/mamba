@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from expects import *
-
 from mamba.settings import Settings
 
 IRRELEVANT_SLOW_TEST_THRESHOLD = 'irrelevant slow test threeshold'

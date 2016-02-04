@@ -3,8 +3,6 @@ try:
 except ImportError:
     from mock import patch
 
-from expects import *
-
 
 class ExampleClass(object):
 
