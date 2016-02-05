@@ -57,7 +57,7 @@ class Loader(object):
 
     def _load_examples(self, klass, example_group):
         for method in self._methods_representing_examples_in(klass):
-            if self._is_name_of_pending_example(method.__name__) or self._is_pending_example_group(example_group):
+            if self._represents_pending_example(method) or self._is_pending_example_group(example_group):
                 example_group.append(PendingExample(method))
             else:
                 example_group.append(Example(method))
@@ -70,6 +70,12 @@ class Loader(object):
 
     def _is_name_of_pending_example(self, name):
         return name[10:].startswith('_it')
+
+    def _represents_pending_example(self, method):
+        return self._is_name_of_pending_example(method.__name__) or self._has_empty_body(method)
+
+    def _has_empty_body(self, method):
+        return method.__code__.co_code == (lambda: None).__code__.co_code
 
     def _is_pending_example_group(self, example_group):
         return isinstance(example_group, PendingExampleGroup)
