@@ -130,7 +130,7 @@ class DocumentationFormatter(Formatter):
         parts_of_name = [self._format_example_name(example)]
 
         current = example
-        while current.parent:
+        while current.parent is not None:
             parts_of_name.append(self._format_example_name(current.parent))
             current = current.parent
 
