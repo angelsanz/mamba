@@ -134,8 +134,7 @@ class DocumentationFormatter(Formatter):
             parts_of_name.append(self._format_example_name(current.parent))
             current = current.parent
 
-        parts_of_name.reverse()
-        return ' '.join(parts_of_name)
+        return ' '.join(reversed(parts_of_name))
 
     def _format_failing_expectation(self, example):
         tb = self._traceback(example)
