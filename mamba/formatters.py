@@ -111,7 +111,7 @@ class DocumentationFormatter(Formatter):
         return '%.4f seconds' % total_seconds(duration)
 
     def failures(self, failed_examples):
-        if not failed_examples:
+        if len(failed_examples) == 0:
             return
 
         puts()
